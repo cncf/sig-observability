@@ -1,6 +1,6 @@
 # Observability Whitepaper
 
-__This is a Work in progress.__ Folks working on the whitepaper, please interact with the whitepaper with [Issues](https://github.com/cncf/tag-observability/issues/new) and [Pull Requests](https://github.com/cncf/tag-observability/pulls). Discussions are happening at [CNCF’s slack](https://slack.cncf.io/) (#tag-observability channel)
+**We're in the public review phase!** Please read it, share your thoughts and suggest modifications. If you're feeling capable and generous, there is also a contributing section with instructions to what we still want to add to this whitepaper!
 
 ## Table of Contents
 * [Executive Summary](#executive-summary)
@@ -41,7 +41,7 @@ With the popularization of cloud computing, microservices and distributed system
 
 Applications need to be designed and built to include and facilitate mechanisms that make them observable by some entity, e.g., whether this entity is another application or a human without access to the datacenter. The effort must be made early, beginning with design, and it often requires extra code or infrastructure automation and instrumentation. These cultural and process changes are often challenges or blockers for many organizations. On top of that, there are many methods and tools out in the market that suggest different approaches to reach a reasonable level of observability.
 
-Community research[4] conducted by ClearPath Strategies and Honeycomb.io show that "Three in four teams have yet to begin or are early in their observability journeys" and that "There is momentum behind the shift toward achieving more observable systems". Once one reaches a satisfactory level of observability, there is no doubt of its benefits, but getting started can feel like a daunting task! Cultural changes, different tools, different objectives, different methods. So many details that need to be taken into consideration can make this journey quite confusing and painful. The purpose of this paper is to provide clarity so that more software and operations teams can gain the benefits of observability in their systems.
+Community research conducted by ClearPath Strategies and Honeycomb.io show that "Three in four teams have yet to begin or are early in their observability journeys" and that "There is momentum behind the shift toward achieving more observable systems". Once one reaches a satisfactory level of observability, there is no doubt of its benefits, but getting started can feel like a daunting task! Cultural changes, different tools, different objectives, different methods. So many details that need to be taken into consideration can make this journey quite confusing and painful. The purpose of this paper is to provide clarity so that more software and operations teams can gain the benefits of observability in their systems.
 
 ### Target Audience
 
@@ -67,7 +67,7 @@ Even though there are several new challenges, such as culture change, capacity p
 
 There is no doubt that observability is a desirable property of a system nowadays. Everybody is saying that, right? Some of you may have already started your observability journey, while others are reading this whitepaper right now just because everyone is saying that you should make your systems observable. The fact is that "Observability" has become a buzzword, and like every other buzzword, everyone wants to leave their mark while advocating for it, and what you have heard may have a different meaning from what it originated from. If you're going to level up your game on observability, let's try to make it clear its original purpose.
 
-"In control theory, observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs" [9]. Being less theoretical, it is a function of a system with which humans and machines can observe, understand and act on the state of said system. So yes, observability, by definition, looks simple, but it gets complicated to decide which output(s) a system should have when implementing without an objective in mind. That's when things start to go sideways.
+"In control theory, observability is a measure of how well internal states of a system can be inferred from knowledge of its external outputs". Being less theoretical, it is a function of a system with which humans and machines can observe, understand and act on the state of said system. So yes, observability, by definition, looks simple, but it gets complicated to decide which output(s) a system should have when implementing without an objective in mind. That's when things start to go sideways.
 
 When getting started, it's easy just to copy someone else's work. That is one of the blessings and, at the same time, one of the curses of Open Source. There are so many examples online; helm charts, Ansible playbooks, Terraform modules, one can just run one of those scripts, and you have an observability stack up and running in just a couple of minutes. It is easy, and it works for others. Therefore it should work for me, right? Well, we're not trying to encourage you not to use those types of script, but you must keep in mind that observability is not just using all the pretty and shiny tools. You must be conscious about what outputs are coming out of your system and, more important than everything, you need to have an objective in mind! You may think: "Oh, I want to collect this particular data because you never know, I may need that in the future." and you repeat this thought for another data, and another, and another, and then you realize that you are building a data lake instead.
 
@@ -87,7 +87,7 @@ ___insert image with all 5 signals here___
 
 ### Metrics
 
-Metrics are numeric representations of data. They fall into two main categories: Data that is already numeric and data distilled into numbers. A typical example of the former would be temperature and a process counter for the latter. This differs from logs or traces, which focus on records or information about individual events.
+Metrics are numeric representations of data. They fall into two main categories: data that is already numeric and data distilled into numbers. A typical example of the former would be temperature and a process counter for the latter. This differs from logs or traces, which focus on records or information about individual events.
 
 Distilled data loses details, e.g. a process counter fails information about when specific increments happened. This trade-off makes metrics one of the most efficient signals: Subject matter experts chose what to distil and how. This reduces the load for retaining, emitting, transmitting, storing, and processing. It also reduces mental overload for human operators as they can get a quick overview of a situation.
 
@@ -106,14 +106,14 @@ A log is a stream of textual entries describing usage patterns, activities, and 
 
 Logs can be categorized into different categories such as:
 * __Application Logs__ - an application log is created when an event takes place inside an application. These logs help developers understand and measure how applications are behaving during development and after release.
-Security Log - security logs are created in response to security events that take place on the system. These can include a variety of events such as failed log-ins, password changes, failed authentication requests, resource access, resource changes including files, devices, users, or other administrative changes. System Administrators can often configure which types of events are included in the security log.
+* __Security Log__ - security logs are created in response to security events that take place on the system. These can include a variety of events such as failed log-ins, password changes, failed authentication requests, resource access, resource changes including files, devices, users, or other administrative changes. System Administrators can often configure which types of events are included in the security log.
 * __System Log__ - system logs record events that occur within the operating system itself, such as kernel-level messages dealing with physical and logical devices, boot sequences, user or application authentication, and other activities, including faults and status messages.
 * __Audit log__ - also called an audit trail, is essentially a record of events and changes. Typically, they capture events by recording who performed an activity, what activity was performed, and how the system responded. Often the system administrator will determine what is collected for the audit log based on business requirements.
 * __Infrastructure log__ - is a vital part of infrastructure management, which involves managing the physical and logical equipment that affect an organization's IT foundation. This can be either on-premises or in the cloud and are obtained via APIs, Syslog, or other collected using host-based agents.
 
 Logs can be useful in different scenarios - metrics, traces, security, debugging. Keeping a record of all application and system-related events makes it possible to understand and even reproduce step-by-step actions leading to a particular situation. These records are notably valuable when performing root-cause analysis providing information to understand the state of the application or system at the moment of the failure. 
 
-Information stored in the logs is free from text, making them a challenge to derive meaning from. There have been many attempts at applying a schema to logs in the past 30 years, but none have been particularly successful. The reason for a schema makes extracting relevant information more accessible. Typically this is done by parsing, segmenting, and analyzing the text in the log file. The data from logs can also be converted to other observability signals, including metrics and traces. Once the data is a metric, it can be used for understanding the change over time. Log data can also be visualized and analyzed through log analytics technologies. 
+Information stored in the logs is free form text, making them a challenge to derive meaning from. There have been many attempts at applying a schema to logs in the past 30 years, but none have been particularly successful. The reason for a schema makes extracting relevant information more accessible. Typically this is done by parsing, segmenting, and analyzing the text in the log file. The data from logs can also be converted to other observability signals, including metrics and traces. Once the data is a metric, it can be used for understanding the change over time. Log data can also be visualized and analyzed through log analytics technologies. 
 
 Log levels allow expressing the importance of each log statement. One set of such log levels would be ERROR, WARNING, INFO, and DEBUG. With ERROR being the least-detailed level and DEBUG being the highest-detailed.
 1. __ERROR__ communicates the occurrence and details about why a failure happened.
@@ -153,9 +153,9 @@ Instrumentation then has two main purposes for distributed tracing: context prop
 As companies continue to optimize for cloud-native applications, it becomes increasingly important to understand performance metrics at the most granular level possible. Other tools will often show that a performance issue exists (i.e. latency, memory leak, etc.) Continuously collecting profiles allows us to drill down and see why a particular system is experiencing such problems.
 
 There are several different profilers that can be used for other use cases/resources:
-* CPU Profilers
-* Heap Profilers
-* GPU Profilers
+* CPU profilers
+* Heap profilers
+* GPU profilers
 * Mutex profilers
 * IO profilers
 * Language-specific profilers (e.g. JVM Profiler)
@@ -204,7 +204,7 @@ Multi-signal observability is doable, and many have already accomplished it. Sti
 
 1. Different operational effort.
 
-Unless you are willing to spend money on a SaaS solution, which will do some of the work for you, it's hard these days to have one team managing all observability systems. It's not uncommon to have a separate specialized team for installing, managing, and maintaining each observability signals, e.g. one for metrics system, one for logging stack, one for tracing. This is due to different design patterns, technologies, storage systems and installation methods each system requires. The fragmentation here is huge. This is what we aim to improve with open-source initiatives like [OpenTelemetry](https://opentelemetry.io/) for instrumenting and forwarding parts and [Obsevatorium](https://observatorium.io/) for scalable multi-signal backends.
+Unless you are willing to spend money on a SaaS solution, which will do some of the work for you, it's hard these days to have one team managing all observability systems. It's not uncommon to have a separate specialized team for installing, managing, and maintaining each observability signals, e.g. one for metrics system, one for logging stack, one for tracing. This is due to different design patterns, technologies, storage systems and installation methods each system requires. The fragmentation here is huge. This is what we aim to improve with open-source initiatives like [OpenTelemetry](https://opentelemetry.io/) for instrumenting and forwarding parts and [Observatorium](https://observatorium.io/) for scalable multi-signal backends.
 
 2. Duplication of effort.
 
@@ -238,7 +238,7 @@ But this is not the end. We sometimes have further details that are sometimes at
 
 ![image](https://user-images.githubusercontent.com/24193764/121791219-e2d80f00-cbbd-11eb-8696-09dfd226aff1.png)
 
-While such a level of correlation might be good enough for some use cases, we might be missing an important one: Large Scale! Processes in such large systems do not handle a few requests. They perform trillions of operations for vastly different purposes and effects. Even if we can get all log lines or traces from a single process, even for a single second, how do you find the request, operation or trace ID that is relevant to your goal from thousands of concurrent requests being processed at that time? Powerful logging languages (e.g. [LogQL](https://grafana.com/docs/loki/latest/logql/)) allow you to grep logs for details like log levels, error statuses, message, code file, etc. However, this requires you to understand the available fields, their format, and how it maps to the situation in the process. 
+While such a level of correlation might be good enough for some use cases, we might be missing an important one: Large Scale! Processes in such large systems do not handle a few requests. They perform trillions of operations for vastly different purposes and effects. Even if we can get all log lines or traces from a single process, even for a single second, how do you find the request, operation or trace ID that is relevant to your goal from thousands of concurrent requests being processed at that time? Powerful log query languages (e.g. [LogQL](https://grafana.com/docs/loki/latest/logql/)) allow you to grep logs for details like log levels, error statuses, message, code file, etc. However, this requires you to understand the available fields, their format, and how it maps to the situation in the process. 
 
 Wouldn't it be better if the alert for a high number of certain errors or high latency of some endpoint let you know all the request IDs that were affected? Such alerts are probably based on __metrics__ and such metrics were incremented during some request flow, which most likely also produced a __log line or trace__ and had its __request, operation or trace ID__ assigned, right?
 
@@ -257,7 +257,7 @@ In theory, we could have exemplars attached to profiles too, but given its speci
 We talked about ways you can navigate between signals, but is it really useful? Let's go through two basic examples, very briefly:
 
 ![image](https://user-images.githubusercontent.com/24193764/121791411-03a16400-cbc0-11eb-8183-e8124cf0947f.png)
-* We got an alert about an unexpectedly high error rate exceeding our SLO. Alert is based on a counter of errors, and we see a spike of requests resulting in 501 errors. We take __exemplar__ to navigate to the example log line to learn the exact human-friendly error message. It appears the error is coming from an internal microservice behind many hops, so we navigate to traces thanks to the existence of a __request ID__ that is matching __trace ID__. Thanks to that, we know exactly what service/process is responsible for the problem and dig there more.
+* We got an alert about an unexpectedly high error rate exceeding our SLO. Alert is based on a counter of errors, and we see a spike of requests resulting in 501 errors (see also [Alerting on Observability data](#alerting-on-observability-data)). We take __exemplar__ to navigate to the example log line to learn the exact human-friendly error message. It appears the error is coming from an internal microservice behind many hops, so we navigate to traces thanks to the existence of a __request ID__ that is matching __trace ID__. Thanks to that, we know exactly what service/process is responsible for the problem and dig there more.
 
 ![image](https://user-images.githubusercontent.com/24193764/121791428-1c117e80-cbc0-11eb-9f12-39a2de1366f1.png)
 
@@ -384,10 +384,10 @@ This has the advantage of being simple and straightforward to see what's happeni
 
 Alerting on burn rate is a more sophisticated method and one that will likely yield more actionable alerts. First, let's define what burn rate and error budgets are in a bit more detail.
 
-Inherent in all SLO definitions is the concept of an error budget. By stating an SLO of 99.9%, you're saying that a .1% failure rate (i.e. your error budget) is acceptable for some predefined amount of time (your SLO window). "Burn rate is how fast, relative to the SLO, the service consumes the error budget" [8]. So, for example, if a "service uses a burn rate of 1, it means it's consuming error budget at a rate that leaves you with exactly 0 budget at the end of the SLO's time window. With an SLO of 99.9% over a time window of 30 days, a constant 0.1% error rate uses exactly all of the error budget: a burn rate of 1." [8]
+Inherent in all SLO definitions is the concept of an error budget. By stating an SLO of 99.9%, you're saying that a .1% failure rate (i.e. your error budget) is acceptable for some predefined amount of time (your SLO window). "Burn rate is how fast, relative to the SLO, the service consumes the error budget". So, for example, if a "service uses a burn rate of 1, it means it's consuming error budget at a rate that leaves you with exactly 0 budget at the end of the SLO's time window. With an SLO of 99.9% over a time window of 30 days, a constant 0.1% error rate uses exactly all of the error budget: a burn rate of 1."
 
 ![image](https://user-images.githubusercontent.com/24193764/121790715-74448280-cbb8-11eb-9b66-ea432377449f.png)
-(Errors relative to burn rate[8])
+(Errors relative to burn rate)
 
 
 | Burn rate | Error rate for a 99.9% SLO | time to exhaustion |
@@ -396,7 +396,7 @@ Inherent in all SLO definitions is the concept of an error budget. By stating an
 | 2         | 0.2%                       | 15 days            |
 | 10        | 1%                         | 3 days             |
 | 1000      | 100%                       | 43 minutes         |
-(Burn rates and time to complete budget exhaustion[8])
+(Burn rates and time to complete budget exhaustion)
 
 The burn rate will allow us to reduce the size of our window and create an alert with good detection time and high precision. For our example, assume keeping the alert window fixed at one hour and deciding that a 5% error budget spend is significant enough to notify someone, you can derive the burn rate to use for the alert.
 
@@ -416,7 +416,7 @@ So, five percent of a 30-day error budget spent over one hour requires a burn ra
 
 ### Multi-signal correlation
 
-Hopefully, the above write up explains well how to think about observability correlation, what it means and what is achievable right now. Yet let's quickly enumerate the pitfalls of today's multi-signal observability linking:
+Hopefully, the section [Correlating Observability Signals](#correlating-observability-signals) explains well how to think about observability correlation, what it means and what is achievable right now. Yet let's quickly enumerate the pitfalls of today's multi-signal observability linking:
 
 * Inconsistent metadata
 
@@ -507,7 +507,7 @@ Thanks, all of you!
 [Jonah Kowall]:           https://github.com/jkowall
 [Juraci Paixão Kröhling]: https://github.com/jpkrohling
 [Ken Finnigan]:           https://github.com/kenfinnigan
-[Krisztian Fekete]:       @
+[Krisztian Fekete]:       https://github.com/fktkrt
 [Liz Fong-Jones]:         https://github.com/lizthegrey
 [Matt Young]:             https://github.com/halcyondude
 [Michael Hausenblas]:     https://github.com/mhausenblas
